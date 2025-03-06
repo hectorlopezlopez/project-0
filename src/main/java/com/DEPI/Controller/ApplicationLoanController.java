@@ -10,10 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ApplicationLoanController {
+    AuthController authController;;
     private static final Logger logger = LoggerFactory.getLogger(ApplicationLoanController.class);
     private final ApplicationLoanService applicationLoanService;
 
     public ApplicationLoanController() {
+        this.authController = new AuthController();
         this.applicationLoanService = new ApplicationLoanService();
     }
 
@@ -28,7 +30,7 @@ public class ApplicationLoanController {
     }
 
     public void getAllLoansApplications(Context ctx) {
-        if (!AuthController.checkLogin(ctx)) {
+        if (!authController.checkLogin(ctx)) {
             ctx.status(401).json("{\"error\": \"Not logged in\"}");
             return;
         }
@@ -36,16 +38,16 @@ public class ApplicationLoanController {
     }
 
     public void getApplicationByUser(Context ctx) {
-        if (!AuthController.checkLogin(ctx)) {
+        if (!authController.checkLogin(ctx)) {
             ctx.status(401).json("{\"error\": \"Not logged in\"}");
             return;
         }
-        int userId = AuthController.getUserId(ctx);
+        int userId = authController.getUserId(ctx);
         ctx.json(applicationLoanService.getApplicationByUser(userId));
     }
 
     public void getApplicationById(Context ctx) {
-        if (!AuthController.checkLogin(ctx)) {
+        if (!authController.checkLogin(ctx)) {
             ctx.status(401).json("{\"error\": \"Not logged in\"}");
             return;
         }
@@ -60,13 +62,13 @@ public class ApplicationLoanController {
     }
 
     public void createLoanApplication(Context ctx) {
-        if (!AuthController.checkLogin(ctx)) {
+        if (!authController.checkLogin(ctx)) {
             ctx.status(401).json("{\"error\": \"Not logged in\"}");
             return;
         }
 
         RequestApplicationLoanDTO applicationLoanDTO = ctx.bodyAsClass(RequestApplicationLoanDTO.class);
-        String result = applicationLoanService.createLoan(applicationLoanDTO, AuthController.getUserId(ctx));
+        String result = applicationLoanService.createLoan(applicationLoanDTO, authController.getUserId(ctx));
 
         if (result.equals("Loan created")) {
             ctx.status(201).json("{\"message\": \"Loan created\"}");
@@ -76,7 +78,7 @@ public class ApplicationLoanController {
     }
 
     public void updateLoanApplication(Context ctx) {
-        if (!AuthController.checkLogin(ctx) || AuthController.getRole(ctx) != 1) {
+        if (!authController.checkLogin(ctx) || authController.getRole(ctx) != 1) {
             ctx.status(403).json("{\"error\": \"You don't have permissions to do this\"}");
             return;
         }
@@ -89,7 +91,7 @@ public class ApplicationLoanController {
     }
 
     public void updateLoanStatusApplication(Context ctx) {
-        if (!AuthController.checkLogin(ctx) || AuthController.getRole(ctx) != 1) {
+        if (!authController.checkLogin(ctx) || authController.getRole(ctx) != 1) {
             ctx.status(403).json("{\"error\": \"You don't have permissions to do this\"}");
             return;
         }
@@ -109,7 +111,7 @@ public class ApplicationLoanController {
 
 
     public void deleteLoanApplication(Context ctx) {
-        if (!AuthController.checkLogin(ctx) || AuthController.getRole(ctx) != 1) {
+        if (!authController.checkLogin(ctx) || authController.getRole(ctx) != 1) {
             ctx.status(403).json("{\"error\": \"You don't have permissions to do this\"}");
             return;
         }

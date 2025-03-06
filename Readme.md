@@ -4,8 +4,8 @@
 Log in is a must to use every enpoint. Certain endpoints are restricted to managers and some other ones to normal users.</h3>
 
 *************************************************************************************************
-<em> Tools used:</em>
-   <p align="left">
+<h4 align="center"> Tools used:</h4>
+   <p align="center">
    <img src="https://img.shields.io/badge/MAVEN-23-green">
    <img src="https://img.shields.io/badge/JAVALIN-6.4.0-green">
    <img src="https://img.shields.io/badge/POSTGRE SQL-42.7.5-green">

@@ -213,7 +213,7 @@ public class UserDAO {
             return false;
         }
 
-        sql.setLength(sql.length() - 2); // Quitar la última coma
+        sql.setLength(sql.length() - 2);
         sql.append(" WHERE id_user = ?");
         params.add(user.getId());
 

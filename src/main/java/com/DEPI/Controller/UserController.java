@@ -14,13 +14,13 @@ import org.slf4j.LoggerFactory;
 
 
 public class UserController {
-
-
+    AuthController authController;
     UserService userService;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public UserController(){
         this.userService = new UserService();
+        this.authController = new AuthController();
     }
 
     public void registerRoutes(Javalin app) {
@@ -37,14 +37,14 @@ public class UserController {
 
     public void getUsers(Context ctx){
 
-        if(AuthController.checkLogin(ctx)) {
+        if(authController.checkLogin(ctx)) {
             ctx.json(userService.getAllUsers());
         }
 
     }
 
     public void getUserById(Context ctx) {
-        if (AuthController.checkLogin(ctx)) {
+        if (authController.checkLogin(ctx)) {
             int userId = Integer.parseInt(ctx.pathParam("id_user"));
             User user = userService.getUserById(userId);
             if (user != null) {
@@ -58,12 +58,12 @@ public class UserController {
     }
 
     public void updateMyUser(Context ctx) {
-        if (!AuthController.checkLogin(ctx)) {
+        if (!authController.checkLogin(ctx)) {
             ctx.status(401).json("{\"error\": \"Not logged in\"}");
             return;
         }
 
-        int userId = AuthController.getUserId(ctx);
+        int userId = authController.getUserId(ctx);
         RequestUserDTO userDto = ctx.bodyAsClass(RequestUserDTO.class);
 
         String result = userService.updateMyUser(userId, userDto);
@@ -78,7 +78,7 @@ public class UserController {
 
 
     public void getLoansByUser(Context ctx) {
-        if (AuthController.checkLogin(ctx)) {
+        if (authController.checkLogin(ctx)) {
             int userId = Integer.parseInt(ctx.pathParam("id_user"));
             RequestUserApplicationLoanDTO requestUserApplicationLoanDTO = userService.getLoansByUser(userId);
             if (requestUserApplicationLoanDTO != null) {
@@ -93,7 +93,7 @@ public class UserController {
 
 
     public void createUser(Context ctx) throws JsonProcessingException {
-        if(AuthController.checkLogin(ctx)) {
+        if(authController.checkLogin(ctx)) {
             RequestUserDTO userDto = ctx.bodyAsClass(RequestUserDTO.class);
             if (userDto.getName().trim().isEmpty()
                     && userDto.getLastName().isEmpty()
@@ -101,7 +101,7 @@ public class UserController {
                     && userDto.getPassword().trim().isEmpty()
                     && userDto.getPhone().trim().isEmpty()
                     && userDto.getMail().trim().isEmpty()) {
-                logger.error("Failed to create an user by missing data : {}", AuthController.getUserId(ctx));
+                logger.error("Failed to create an user by missing data : {}", authController.getUserId(ctx));
                 ctx.status(400).json("{\"error\":\"Missing data\"}");
 
                 return;
@@ -128,7 +128,7 @@ public class UserController {
     }
 
     public void updateUser (Context ctx) {
-        if(AuthController.checkLogin(ctx)) {
+        if(authController.checkLogin(ctx)) {
         int userId = Integer.parseInt(ctx.pathParam("id_user"));
         RequestUserDTO userDto = ctx.bodyAsClass(RequestUserDTO.class);
         if (userDto.getName().trim().isEmpty()
@@ -137,7 +137,7 @@ public class UserController {
                 && userDto.getPassword().trim().isEmpty()
                 && userDto.getPhone().trim().isEmpty()
                 && userDto.getMail().trim().isEmpty()) {
-            logger.error("Failed to update an user by missing data : {}", AuthController.getUserId(ctx));
+            logger.error("Failed to update an user by missing data : {}", authController.getUserId(ctx));
             ctx.status(400).json("{\"error\":\"Missing data\"}");
 
             return;
@@ -158,14 +158,14 @@ public class UserController {
             logger.info("User updated: {}", user.getId()+" with name "+user.getName());
         } else {
             ctx.status(500).json("Something wrong with updating user->" + user.getName());
-            logger.error("Failed to update an user : {}", AuthController.getUserId(ctx));
+            logger.error("Failed to update an user : {}", authController.getUserId(ctx));
         }
 
     }
     }
 
     public void deleteUser (Context ctx) {
-        if(AuthController.checkLogin(ctx)) {
+        if(authController.checkLogin(ctx)) {
             int userId = Integer.parseInt(ctx.pathParam("id_user"));
             if (userId==0) {
                 ctx.status(400).json("{\"error\":\"Missing data\"}");

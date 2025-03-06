@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 public class LoanController {
     private static final Logger logger = LoggerFactory.getLogger(LoanController.class);
     private final LoanService loanService;
+    private AuthController authController;
 
     public LoanController() {
         this.loanService = new LoanService();
+        this.authController = new AuthController();
     }
 
     public void registerRoutes(Javalin app) {
@@ -21,7 +23,7 @@ public class LoanController {
     }
 
     public void getAllLoans(Context ctx) {
-        if (!AuthController.checkLogin(ctx)) {
+        if (!authController.checkLogin(ctx)) {
             ctx.status(401).json("{\"error\": \"Not logged in\"}");
             return;
         }
@@ -29,7 +31,7 @@ public class LoanController {
     }
 
     public void createLoan(Context ctx) {
-        if (!AuthController.checkLogin(ctx)) {
+        if (!authController.checkLogin(ctx)) {
             ctx.status(401).json("{\"error\": \"Not logged in\"}");
             return;
         }
