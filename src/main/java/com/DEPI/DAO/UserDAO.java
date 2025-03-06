@@ -177,8 +177,6 @@ public class UserDAO {
     }
 
     public boolean updateMyUser(User user) {
-        connection = ConnectionUtil.getConnection();
-
         StringBuilder sql = new StringBuilder("UPDATE profile SET ");
         List<Object> params = new ArrayList<>();
 
@@ -215,11 +213,12 @@ public class UserDAO {
             return false;
         }
 
-        sql.setLength(sql.length() - 2);
+        sql.setLength(sql.length() - 2); // Quitar la última coma
         sql.append(" WHERE id_user = ?");
         params.add(user.getId());
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql.toString())) {
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < params.size(); i++) {
                 stmt.setObject(i + 1, params.get(i));
@@ -227,8 +226,7 @@ public class UserDAO {
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException("Error updating user", e);
         }
     }
 

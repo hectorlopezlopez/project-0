@@ -58,58 +58,23 @@ public class UserController {
     }
 
     public void updateMyUser(Context ctx) {
-        if (AuthController.checkLogin(ctx)) {
-            int userId = AuthController.getUserId(ctx);
-            RequestUserDTO userDto = ctx.bodyAsClass(RequestUserDTO.class);
+        if (!AuthController.checkLogin(ctx)) {
+            ctx.status(401).json("{\"error\": \"Not logged in\"}");
+            return;
+        }
 
-            if ((userDto.getName() == null || userDto.getName().trim().isEmpty()) &&
-                    (userDto.getLastName() == null || userDto.getLastName().trim().isEmpty()) &&
-                    (userDto.getAddress() == null || userDto.getAddress().trim().isEmpty()) &&
-                    (userDto.getPassword() == null || userDto.getPassword().trim().isEmpty()) &&
-                    (userDto.getPhone() == null || userDto.getPhone().trim().isEmpty()) &&
-                    (userDto.getMail() == null || userDto.getMail().trim().isEmpty())) {
+        int userId = AuthController.getUserId(ctx);
+        RequestUserDTO userDto = ctx.bodyAsClass(RequestUserDTO.class);
 
-                ctx.status(400).json("{\"error\":\"Missing at least one updating data\"}");
-                return;
-            }
+        String result = userService.updateMyUser(userId, userDto);
 
-            User existingUser = userService.getUserById(userId);
-            if (existingUser == null) {
-                ctx.status(404).json("{\"error\":\"User not found\"}");
-                return;
-            }
-
-            if (userDto.getName() != null && !userDto.getName().trim().isEmpty()) {
-                existingUser.setName(userDto.getName());
-            }
-            if (userDto.getLastName() != null && !userDto.getLastName().trim().isEmpty()) {
-                existingUser.setLastName(userDto.getLastName());
-            }
-            if (userDto.getPhone() != null && !userDto.getPhone().trim().isEmpty()) {
-                existingUser.setPhone(userDto.getPhone());
-            }
-            if (userDto.getAddress() != null && !userDto.getAddress().trim().isEmpty()) {
-                existingUser.setAddress(userDto.getAddress());
-            }
-            if (userDto.getMail() != null && !userDto.getMail().trim().isEmpty()) {
-                existingUser.setMail(userDto.getMail());
-            }
-            if (userDto.getPassword() != null && !userDto.getPassword().trim().isEmpty()) {
-                existingUser.setPassword(userDto.getPassword());
-            }
-            if (userDto.getRol() != 0) {
-                existingUser.setRol(userDto.getRol());
-            }
-
-            if (userService.updateMyUser(existingUser)) {
-                ctx.status(200).json("{\"message\": \"User updated successfully\"}");
-            } else {
-                ctx.status(500).json("{\"error\": \"Something went wrong while updating user\"}");
-            }
+        if (result.equals("User updated")) {
+            ctx.status(200).json("{\"message\": \"User updated successfully\"}");
         } else {
-            ctx.status(401).result("{\"error\": \"Not logged in\"}");
+            ctx.status(400).json("{\"error\": result}");
         }
     }
+
 
 
     public void getLoansByUser(Context ctx) {

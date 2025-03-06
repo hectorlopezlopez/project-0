@@ -1,7 +1,6 @@
 package com.DEPI.Controller;
 
 import com.DEPI.DTO.RequestLoanDTO;
-import com.DEPI.Model.Loan;
 import com.DEPI.Service.LoanService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -9,10 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LoanController {
-
-    public LoanService loanService;
-
     private static final Logger logger = LoggerFactory.getLogger(LoanController.class);
+    private final LoanService loanService;
 
     public LoanController() {
         this.loanService = new LoanService();
@@ -23,37 +20,27 @@ public class LoanController {
         app.post("/loan", this::createLoan);
     }
 
-    public void getAllLoans (Context ctx) {
-        if(AuthController.checkLogin(ctx)) {
-            ctx.json(loanService.getAllLoans());
+    public void getAllLoans(Context ctx) {
+        if (!AuthController.checkLogin(ctx)) {
+            ctx.status(401).json("{\"error\": \"Not logged in\"}");
+            return;
         }
+        ctx.json(loanService.getAllLoans());
     }
 
-    public void createLoan(Context ctx){
-        if(AuthController.checkLogin(ctx)) {
-        RequestLoanDTO loanDTO = ctx.bodyAsClass(RequestLoanDTO.class);
-        if(
-                 loanDTO.getName().trim().isEmpty()
-                && loanDTO.getDescription().trim().isEmpty()
-                && loanDTO.getInterest_base()!=0
-        ){
-            logger.error("Failed to create a loan by missing data : {}");
-            ctx.status(400).json("{\"error\":\"Missing data\"}");
-
+    public void createLoan(Context ctx) {
+        if (!AuthController.checkLogin(ctx)) {
+            ctx.status(401).json("{\"error\": \"Not logged in\"}");
             return;
         }
 
-        Loan loan = new Loan();
-        loan.setName(loanDTO.getName());
-        loan.setDescription(loanDTO.getDescription());
-        loan.setInterest_base(loanDTO.getInterest_base());
-        if(loanService.createLoan(loan)){
-            ctx.status(200).json("Loan created");
-            logger.info("Loan created: {}",loan.getName());
-        }else {
-            logger.error("Failed to create a loan : {}", loan.getName());
-            ctx.status(500).json("Something went wrong with creating the Loan");
+        RequestLoanDTO loanDTO = ctx.bodyAsClass(RequestLoanDTO.class);
+        String result = loanService.createLoan(loanDTO);
+
+        if (result.equals("Loan created")) {
+            ctx.status(201).json("{\"message\": \"Loan created\"}");
+        } else {
+            ctx.status(400).json("{\"error\": result}");
         }
-    }
     }
 }

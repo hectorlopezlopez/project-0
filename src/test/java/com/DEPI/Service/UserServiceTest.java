@@ -1,6 +1,7 @@
 package com.DEPI.Service;
 
 import com.DEPI.DAO.UserDAO;
+import com.DEPI.DTO.RequestUserDTO;
 import com.DEPI.Model.User;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -69,10 +70,11 @@ public class UserServiceTest extends TestCase {
     @Test
     public void testUpdateMyUser(){
         User userMock = new User(1,"Hector","Lopesillo","7717412330","San","hll@mail.com","1234",1);
+        RequestUserDTO userMockRequest = new RequestUserDTO(1,"Hector","Lopesillo","7717412330","San","hll@mail.com","1234",1);
         when(userDAO.updateMyUser(userMock)).thenReturn(true);
-        boolean userResult = userService.updateMyUser(userMock);
+        String userResult = userService.updateMyUser(1,userMockRequest);
         assertNotNull(userResult);
-        assertTrue(userResult);
+        assertEquals("User updated",userResult);
         verify(userDAO,times(1)).updateMyUser(userMock);
     }
 

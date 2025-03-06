@@ -1,14 +1,17 @@
 package com.DEPI.Controller;
 
 import com.DEPI.DAO.AuthDAO;
+import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 public class AuthController {
-    public AuthController() {
 
+    public void registerRoutes(Javalin app) {
+        app.post("/login", this::login);
+        app.post("/logout", this::logOut);
     }
 
-    public static void login(Context ctx) {
+    public void login(Context ctx) {
         AuthDAO.login(ctx);
     }
 
@@ -16,7 +19,7 @@ public class AuthController {
         return AuthDAO.checkLogin(ctx);
     }
 
-    public static void logOut(Context ctx){
+    public void logOut(Context ctx){
         AuthDAO.logout(ctx);
     }
 

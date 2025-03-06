@@ -27,8 +27,8 @@ public class GeneralController {
 //------CREATE NEW USER ACCOUNTS-------------------------------------------------------------------------------------------------------------------------------------------------------------------
         app.post("/user", userController::createUser);
 //------LOGIN AND LOGOUT----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        app.post("/login", AuthController::login);
-        app.post("/logout", AuthController::logOut);
+//        app.post("/login", AuthController::login);
+//        app.post("/logout", AuthController::logOut);
 //------REGULAR USER MANAGE AND VIEW THEIR OWN LOANS----------------------------------------------------------------------------------------------------------------------------------------------------------------
         app.get("/applicationloansbyuser",applicationLoanController::getApplicationByUser);
 //------MANAGE ROLES---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ public class GeneralController {
 // ------VIEW ALL LOANS APPLICATTIONS AND APROVE OR REJECT AN APPLICATION----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         app.get("/applicationloan", applicationLoanController::getAllLoansApplications);
 //        TODO: CAMBIAR ESTRUCTURA DE CAMBIAR STATUS
-        app.put("/updateapplicationloan/{id_applicationloan}", applicationLoanController::changeLoanStatus);
+//        app.put("/updateapplicationloan/{id_applicationloan}", applicationLoanController::);
 
 
         app.get("/users", userController::getUsers);

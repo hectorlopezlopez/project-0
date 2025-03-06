@@ -10,6 +10,17 @@ public class RequestUserDTO {
     private String password;
     private int rol;
 
+    public RequestUserDTO(int id, String name, String lastName, String phone, String address, String mail, String password, int rol) {
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.address = address;
+        this.mail = mail;
+        this.password = password;
+        this.rol = rol;
+    }
+
     public int getId() {
         return id;
     }

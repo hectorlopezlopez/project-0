@@ -1,9 +1,6 @@
 package com.DEPI;
 
-import com.DEPI.Controller.ApplicationLoanController;
-import com.DEPI.Controller.GeneralController;
-import com.DEPI.Controller.LoanController;
-import com.DEPI.Controller.UserController;
+import com.DEPI.Controller.*;
 import com.DEPI.Util.ConnectionUtil;
 import io.javalin.Javalin;
 import java.sql.Connection;
@@ -16,6 +13,7 @@ public class Main {
         Javalin app = Javalin.create();
 
 //        CONTROLLERS SETUP
+        new AuthController().registerRoutes(app);
         new UserController().registerRoutes(app);
         new LoanController().registerRoutes(app);
         new ApplicationLoanController().registerRoutes(app);
