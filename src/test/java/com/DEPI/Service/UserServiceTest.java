@@ -66,11 +66,25 @@ public class UserServiceTest extends TestCase {
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //    TEST TO UPDATE MY USER------------------------------------------------------------------------------------------------------------------------------
     @Test
     public void testUpdateMyUser(){
-        User userMock = new User(1,"Hector","Lopesillo","7717412330","San","hll@mail.com","1234",1);
-        RequestUserDTO userMockRequest = new RequestUserDTO(1,"Hector","Lopesillo","7717412330","San","hll@mail.com","1234",1);
+        User userMock = new User(1,"Hector","Lopesillo","7717412330","San","hll@mail.com","12346",1);
+        RequestUserDTO userMockRequest = new RequestUserDTO(1,"Hector","Lopezillo","7717412330","San","hll@mail.com","12346",1);
         when(userDAO.updateMyUser(userMock)).thenReturn(true);
         String userResult = userService.updateMyUser(1,userMockRequest);
         assertNotNull(userResult);

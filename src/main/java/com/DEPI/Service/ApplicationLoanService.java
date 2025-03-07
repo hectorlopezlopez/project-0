@@ -23,7 +23,6 @@ public class ApplicationLoanService {
     }
 
     public ApplicationLoan getApplicationById(int applicationId) {
-        System.out.println("Desde service->"+applicationId);
         return applicationLoanDAO.getApplicationById(applicationId);
     }
 
@@ -37,6 +36,7 @@ public class ApplicationLoanService {
         loan.setInterest(loanDTO.getInterest());
         loan.setDate_application(loanDTO.getDate_application());
         loan.setId_user(userId);
+        loan.setId_loan(loanDTO.getId_loan());
 
         return applicationLoanDAO.createLoan(loan) ? "Loan created" : "Error creating loan";
     }

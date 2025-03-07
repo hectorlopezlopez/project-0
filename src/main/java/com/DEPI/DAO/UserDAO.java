@@ -177,6 +177,7 @@ public class UserDAO {
     }
 
     public boolean updateMyUser(User user) {
+        Connection connection = ConnectionUtil.getConnection();
         StringBuilder sql = new StringBuilder("UPDATE profile SET ");
         List<Object> params = new ArrayList<>();
 
@@ -217,7 +218,7 @@ public class UserDAO {
         sql.append(" WHERE id_user = ?");
         params.add(user.getId());
 
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < params.size(); i++) {
